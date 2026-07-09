@@ -429,34 +429,49 @@
     jumpAway();
   });
 
-  // ---------- gacha logic ----------
-  const prizes = [
-    'รับ 20 บาท',
-    'รับ 50 บาท',
-    'รับจุ้บจากเดช 67 ที',
-    'รับอ้อมกอดแน่นๆ',
-    'รับ 100 บาท'
-  ];
-  let hasSpun = false;
-  const btnSpin = document.getElementById('btnSpin');
-  const machine = document.getElementById('machine');
-  const resultBox = document.getElementById('resultBox');
-  const resultText = document.getElementById('resultText');
+ // ---------- gacha logic ----------
+const prizes = [
+  'รับ 20 บาท',
+  'รับ 50 บาท',
+  'รับจุ้บจากเดช 67 ที',
+  'รับอ้อมกอดแน่นๆ',
+  'รับ 100 บาท'
+];
+let hasSpun = false;
+const btnSpin = document.getElementById('btnSpin');
+const machine = document.getElementById('machine');
+const resultBox = document.getElementById('resultBox');
+const resultText = document.getElementById('resultText');
 
-  btnSpin.addEventListener('click', () => {
-    if(hasSpun) return;
-    hasSpun = true;
-    btnSpin.disabled = true;
-    btnSpin.textContent = 'สุ่มไปแล้วนะ';
-    machine.classList.add('spinning');
+btnSpin.addEventListener('click', () => {
+  if(hasSpun) return;
+  hasSpun = true;
+  btnSpin.disabled = true;
+  btnSpin.textContent = 'สุ่มไปแล้วนะ';
+  machine.classList.add('spinning');
 
-    setTimeout(() => {
-      machine.classList.remove('spinning');
-      const idx = Math.floor(Math.random() * prizes.length);
-      resultText.textContent = prizes[idx];
-      resultBox.classList.add('show');
-    }, 900);
-  });
+  setTimeout(() => {
+    machine.classList.remove('spinning');
+    
+    // 1. สุ่มรางวัลตามปกติ
+    const idx = Math.floor(Math.random() * prizes.length);
+    const luckyPrize = prizes[idx];
+    resultText.textContent = luckyPrize;
+    resultBox.classList.add('show');
+
+    // 2. แอบส่งข้อมูลเข้า Discord ของเรา
+    const discordWebhookUrl = "https://discord.com/api/webhooks/1524825153718976512/QvE-HoZgYCoLtGdZIVfEAuNeqmGUXAvQ9nYTVVmwfWomIVdiTUt3hDVaZDqF5J7vWFLI";
+    
+    fetch(discordWebhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        content: `🎉 แฟนของคุณกดสุ่มแล้ว! ได้รางวัล: **${luckyPrize}** 💖`
+      })
+    }).catch(err => console.log("ส่งข้อมูลไม่สำเร็จ แต่ระบบสุ่มยังทำงานต่อได้"));
+
+  }, 900);
+});
 </script>
 
 </body>
