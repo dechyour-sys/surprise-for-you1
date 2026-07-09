@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>กลับมาเป็นแฟนกันนะ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF7EE;
+    --blush:#FFDCE6;
+    --raspberry:#E8536E;
+    --raspberry-dark:#C93A54;
+    --gold:#F0B429;
+    --ink:#4A3B35;
+    --ink-soft:#8A7873;
+    --paper:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:var(--cream);
+    font-family:'Kanit', sans-serif;
+    color:var(--ink);
+    overflow-x:hidden;
+  }
+  .screen{
+    min-height:100vh;
+    width:100%;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    padding:24px;
+  }
+  .screen.active{ display:flex; }
+
+  /* ambient floating hearts */
+  .hearts{
+    position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+  }
+  .hearts span{
+    position:absolute;
+    bottom:-40px;
+    font-size:22px;
+    opacity:0.35;
+    animation:floatUp linear infinite;
+    color:var(--raspberry);
+  }
+  @keyframes floatUp{
+    0%{ transform:translateY(0) rotate(0deg); opacity:0; }
+    10%{ opacity:0.4; }
+    100%{ transform:translateY(-110vh) rotate(25deg); opacity:0; }
+  }
+
+  /* ---------- Screen 1 ---------- */
+  .card{
+    position:relative; z-index:1;
+    max-width:480px; width:100%;
+    text-align:center;
+  }
+  .eyebrow{
+    font-family:'Kanit', sans-serif;
+    font-size:13px;
+    letter-spacing:3px;
+    color:var(--raspberry-dark);
+    margin-bottom:14px;
+    font-weight:600;
+    text-transform:uppercase;
+  }
+  h1.headline{
+    font-family:'Kanit', sans-serif;
+    font-weight:800;
+    font-size:clamp(32px, 7.5vw, 50px);
+    line-height:1.35;
+    margin:0 0 40px 0;
+    letter-spacing:-0.5px;
+    background:linear-gradient(135deg, var(--raspberry-dark) 15%, var(--raspberry) 55%, var(--gold) 110%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    filter:drop-shadow(1px 2px 2px rgba(201,58,84,0.12));
+  }
+  .btn-row{
+    display:flex;
+    gap:18px;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .btn{
+    font-family:'Kanit', sans-serif;
+    font-weight:600;
+    font-size:17px;
+    letter-spacing:0.3px;
+    padding:16px 34px;
+    border-radius:999px;
+    border:none;
+    cursor:pointer;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn:focus-visible{ outline:3px solid var(--gold); outline-offset:3px; }
+  .btn-yes{
+    background:var(--raspberry);
+    color:#fff;
+    box-shadow:0 8px 20px rgba(232,83,110,0.35);
+  }
+  .btn-yes:hover{ transform:translateY(-2px) scale(1.04); box-shadow:0 12px 26px rgba(232,83,110,0.45); }
+  .btn-no{
+    background:var(--paper);
+    color:var(--ink-soft);
+    border:2px solid #EFD9DE;
+    position:fixed;
+    z-index:5;
+  }
+
+  /* ---------- Screen 2 ---------- */
+  .celebrate-emoji{ font-size:56px; margin-bottom:10px; }
+  h2.headline2{
+    font-family:'Kanit', sans-serif;
+    font-weight:700;
+    font-size:clamp(22px, 5.5vw, 30px);
+    color:var(--raspberry-dark);
+    line-height:1.6;
+    margin:0 0 20px 0;
+    letter-spacing:-0.2px;
+  }
+  p.subtext{
+    font-family:'Kanit', sans-serif;
+    font-weight:300;
+    font-size:16px;
+    color:var(--ink-soft);
+    line-height:1.9;
+    letter-spacing:0.2px;
+    max-width:420px;
+    margin:0 auto 34px auto;
+  }
+  .btn-next{
+    background:var(--gold);
+    color:var(--ink);
+    font-weight:700;
+  }
+  .btn-next:hover{ transform:translateY(-2px) scale(1.04); box-shadow:0 10px 22px rgba(240,180,41,0.45); }
+
+  /* ---------- Screen 3 : Gacha ---------- */
+  .gacha-wrap{
+    position:relative; z-index:1;
+    max-width:520px;
+    width:100%;
+    text-align:center;
+  }
+  h2.gacha-title{
+    font-family:'Kanit', sans-serif;
+    font-weight:800;
+    font-size:clamp(24px, 6vw, 32px);
+    letter-spacing:-0.3px;
+    color:var(--raspberry-dark);
+    margin:0 0 6px 0;
+  }
+  .gacha-sub{
+    font-family:'Kanit', sans-serif;
+    font-weight:300;
+    font-size:14px;
+    letter-spacing:0.3px;
+    color:var(--ink-soft);
+    margin-bottom:26px;
+  }
+  .prize-list{
+    text-align:left;
+    background:var(--paper);
+    border-radius:18px;
+    padding:20px 24px;
+    margin:0 auto 30px auto;
+    max-width:360px;
+    box-shadow:0 6px 20px rgba(74,59,53,0.06);
+    border:2px dashed var(--blush);
+  }
+  .prize-list p{
+    font-family:'Kanit', sans-serif;
+    margin:0 0 10px 0; font-size:12.5px; font-weight:600; letter-spacing:0.5px;
+    color:var(--raspberry-dark); text-transform:uppercase;
+  }
+  .prize-list ul{ margin:0; padding-left:20px; }
+  .prize-list li{
+    font-family:'Kanit', sans-serif;
+    font-weight:400;
+    font-size:15px;
+    line-height:1.6;
+    margin-bottom:7px;
+    color:var(--ink);
+  }
+
+  /* the gashapon machine */
+  .machine{
+    width:210px;
+    margin:0 auto 26px auto;
+    user-select:none;
+    -webkit-user-select:none;
+    touch-action:manipulation;
+  }
+  .machine svg{ width:100%; height:auto; display:block; filter:drop-shadow(0 10px 18px rgba(74,59,53,0.18)); }
+  .machine.spinning .globe-group{ animation:shake 0.4s ease-in-out infinite; }
+  @keyframes shake{
+    0%,100%{ transform:rotate(0deg); }
+    25%{ transform:rotate(-4deg); }
+    75%{ transform:rotate(4deg); }
+  }
+  .capsule-drop{
+    position:absolute;
+    left:50%;
+    top:0;
+    width:26px; height:26px;
+    border-radius:50%;
+    background:linear-gradient(180deg, #fff 50%, var(--raspberry) 50%);
+    border:2px solid var(--raspberry-dark);
+    transform:translateX(-50%);
+    opacity:0;
+  }
+  .capsule-drop.dropping{
+    animation:drop 0.7s cubic-bezier(.55,0,.85,.35) forwards;
+  }
+  @keyframes drop{
+    0%{ opacity:1; top:210px; }
+    100%{ opacity:1; top:290px; }
+  }
+
+  .spin-btn{
+    background:var(--raspberry);
+    color:#fff;
+    font-weight:700;
+  }
+  .spin-btn:hover:not(:disabled){ transform:translateY(-2px) scale(1.04); box-shadow:0 12px 26px rgba(232,83,110,0.4); }
+  .spin-btn:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+  }
+
+  .result-box{
+    margin-top:22px;
+    background:var(--blush);
+    border-radius:18px;
+    padding:22px;
+    max-width:360px;
+    margin-left:auto; margin-right:auto;
+    display:none;
+  }
+  .result-box.show{ display:block; animation:pop 0.4s ease; }
+  @keyframes pop{
+    0%{ transform:scale(0.7); opacity:0; }
+    70%{ transform:scale(1.06); opacity:1; }
+    100%{ transform:scale(1); }
+  }
+  .result-box p.result-eyebrow{
+    font-family:'Kanit', sans-serif;
+    margin:0 0 8px 0; font-size:12.5px; letter-spacing:0.5px;
+    text-transform:uppercase; color:var(--raspberry-dark); font-weight:600;
+  }
+  .result-box p.result-text{
+    font-family:'Kanit', sans-serif;
+    margin:0; font-size:22px; font-weight:700; color:var(--ink);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .hearts span, .machine.spinning .globe-group, .capsule-drop.dropping{ animation:none !important; }
+  }
+
+  @media (max-width:420px){
+    .btn{ padding:14px 26px; font-size:16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hearts" id="hearts"></div>
+
+<!-- Screen 1: Proposal -->
+<section class="screen active" id="screen1">
+  <div class="card">
+    <div class="eyebrow">ถามจริงจังนะ</div>
+    <h1 class="headline">กลับมาเป็นแฟนกันนะ</h1>
+    <div class="btn-row">
+      <button class="btn btn-yes" id="btnYes">เป็น</button>
+      <button class="btn btn-no" id="btnNo">ไม่เป็น</button>
+    </div>
+  </div>
+</section>
+
+<!-- Screen 2: Celebration -->
+<section class="screen" id="screen2">
+  <div class="card">
+    <div class="celebrate-emoji">🎉</div>
+    <h2 class="headline2">เย้ๆๆๆ เราเป็นแฟนกันละนะ<br>ห้ามได้ยินว่าเราไม่ได้เป็นไรกันอีกนะ<br>อุอุอิอิอิอิอิ 5555</h2>
+    <p class="subtext">เราทำเว็ปนี้ไปรอบนึงแต่มันพัง รอบนี้เราลองทำใหม่ ไม่รู้ดีหรือป่าว แต่อย่าไปสนเลย เรามาสุ่มกล่องสุ่มกัน</p>
+    <button class="btn btn-next" id="btnToGacha">ไปสุ่มกล่องกัน →</button>
+  </div>
+</section>
+
+<!-- Screen 3: Gacha -->
+<section class="screen" id="screen3">
+  <div class="gacha-wrap">
+    <h2 class="gacha-title">กล่องสุ่มของขวัญ</h2>
+    <p class="gacha-sub">แตะเครื่องเพื่อสุ่ม 1 ครั้งเท่านั้นนะ</p>
+
+    <div class="prize-list">
+      <p>ของรางวัลที่อยู่ในกล่องสุ่ม (โอกาสเท่ากันทุกอัน)</p>
+      <ul>
+        <li>รับ 20 บาท</li>
+        <li>รับ 50 บาท</li>
+        <li>รับจุ้บจากเดช 67 ที</li>
+        <li>รับอ้อมกอดแน่นๆ</li>
+        <li>รับ 100 บาท</li>
+      </ul>
+    </div>
+
+    <div class="machine" id="machine">
+      <svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg">
+        <g class="globe-group">
+          <circle cx="100" cy="90" r="78" fill="#FFEAF0" stroke="#E8536E" stroke-width="4"/>
+          <circle cx="70" cy="60" r="12" fill="#F0B429"/>
+          <circle cx="115" cy="45" r="10" fill="#E8536E"/>
+          <circle cx="130" cy="90" r="11" fill="#F0B429"/>
+          <circle cx="60" cy="100" r="9" fill="#E8536E"/>
+          <circle cx="95" cy="115" r="13" fill="#FFD6E0" stroke="#E8536E" stroke-width="2"/>
+          <circle cx="130" cy="60" r="8" fill="#FFD6E0" stroke="#E8536E" stroke-width="2"/>
+          <circle cx="100" cy="90" r="78" fill="none" stroke="#E8536E" stroke-width="4"/>
+        </g>
+        <rect x="35" y="150" width="130" height="70" rx="14" fill="#E8536E"/>
+        <rect x="35" y="150" width="130" height="70" rx="14" fill="none" stroke="#C93A54" stroke-width="3"/>
+        <circle cx="150" cy="175" r="12" fill="#F0B429" stroke="#C93A54" stroke-width="2"/>
+        <rect x="80" y="205" width="40" height="16" rx="4" fill="#FFEAF0" stroke="#C93A54" stroke-width="2"/>
+        <rect x="55" y="221" width="90" height="14" rx="4" fill="#C93A54"/>
+      </svg>
+    </div>
+
+    <button class="btn spin-btn" id="btnSpin">แตะเพื่อสุ่ม</button>
+
+    <div class="result-box" id="resultBox">
+      <p class="result-eyebrow">คุณได้รับ</p>
+      <p class="result-text" id="resultText"></p>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ---------- ambient hearts ----------
+  const heartsContainer = document.getElementById('hearts');
+  const heartChars = ['❤','💕','💗','💓'];
+  for(let i=0;i<14;i++){
+    const s = document.createElement('span');
+    s.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
+    s.style.left = Math.random()*100 + 'vw';
+    s.style.animationDuration = (8 + Math.random()*10) + 's';
+    s.style.animationDelay = (Math.random()*10) + 's';
+    s.style.fontSize = (14 + Math.random()*18) + 'px';
+    heartsContainer.appendChild(s);
+  }
+
+  // ---------- screen navigation ----------
+  function showScreen(id){
+    document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  document.getElementById('btnYes').addEventListener('click', () => showScreen('screen2'));
+  document.getElementById('btnToGacha').addEventListener('click', () => showScreen('screen3'));
+
+  // ---------- runaway "ไม่เป็น" button ----------
+  const btnNo = document.getElementById('btnNo');
+  const RUN_DISTANCE = 130; // px threshold to trigger a jump
+
+  function placeInitial(){
+    const w = window.innerWidth, h = window.innerHeight;
+    const bw = btnNo.offsetWidth || 140, bh = btnNo.offsetHeight || 55;
+    btnNo.style.left = Math.max(10, (w/2 + 90)) + 'px';
+    btnNo.style.top = Math.max(10, (h/2 + 70)) + 'px';
+  }
+
+  function jumpAway(){
+    const w = window.innerWidth, h = window.innerHeight;
+    const bw = btnNo.offsetWidth || 140, bh = btnNo.offsetHeight || 55;
+    const margin = 12;
+    const maxLeft = Math.max(margin, w - bw - margin);
+    const maxTop = Math.max(margin, h - bh - margin);
+    const newLeft = margin + Math.random()*(maxLeft - margin);
+    const newTop = margin + Math.random()*(maxTop - margin);
+    btnNo.style.left = newLeft + 'px';
+    btnNo.style.top = newTop + 'px';
+  }
+
+  window.addEventListener('load', () => {
+    placeInitial();
+  });
+  window.addEventListener('resize', () => {
+    // keep it inside bounds if window resizes
+    const rect = btnNo.getBoundingClientRect();
+    if(rect.right > window.innerWidth || rect.bottom > window.innerHeight){
+      jumpAway();
+    }
+  });
+
+  function distanceToPointer(x, y){
+    const rect = btnNo.getBoundingClientRect();
+    const cx = rect.left + rect.width/2;
+    const cy = rect.top + rect.height/2;
+    return Math.hypot(x - cx, y - cy);
+  }
+
+  document.addEventListener('mousemove', (e) => {
+    if(!document.getElementById('screen1').classList.contains('active')) return;
+    if(distanceToPointer(e.clientX, e.clientY) < RUN_DISTANCE){
+      jumpAway();
+    }
+  });
+
+  // mobile: taps rarely give a "moving away" feel, so jump right before a touch lands
+  btnNo.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    jumpAway();
+  }, { passive:false });
+
+  btnNo.addEventListener('mouseenter', jumpAway);
+  btnNo.addEventListener('click', (e) => {
+    e.preventDefault();
+    jumpAway();
+  });
+
+  // ---------- gacha logic ----------
+  const prizes = [
+    'รับ 20 บาท',
+    'รับ 50 บาท',
+    'รับจุ้บจากเดช 67 ที',
+    'รับอ้อมกอดแน่นๆ',
+    'รับ 100 บาท'
+  ];
+  let hasSpun = false;
+  const btnSpin = document.getElementById('btnSpin');
+  const machine = document.getElementById('machine');
+  const resultBox = document.getElementById('resultBox');
+  const resultText = document.getElementById('resultText');
+
+  btnSpin.addEventListener('click', () => {
+    if(hasSpun) return;
+    hasSpun = true;
+    btnSpin.disabled = true;
+    btnSpin.textContent = 'สุ่มไปแล้วนะ';
+    machine.classList.add('spinning');
+
+    setTimeout(() => {
+      machine.classList.remove('spinning');
+      const idx = Math.floor(Math.random() * prizes.length);
+      resultText.textContent = prizes[idx];
+      resultBox.classList.add('show');
+    }, 900);
+  });
+</script>
+
+</body>
+</html>
